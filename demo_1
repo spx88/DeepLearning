@@ -1,0 +1,78 @@
+import tensorflow as tf
+
+
+def tensorflow_demo():
+    a = 2
+    b = 3
+    c = a + b
+    print("普通运算的结果", c)
+
+    # tensorflow实现加法运算
+
+    a_t = tf.constant(2)
+    b_t = tf.constant(3)
+    c_t = a_t + b_t
+    print("tensorflow加法运算的结果", c_t)
+
+    # 开启会话
+    with tf.Session() as sess:
+        c_t_value = sess.run(c_t)
+        print("c_t_value:", c_t_value)
+
+    return None
+
+
+def graph_demo():
+    """图的演示"""
+    a = 2
+    b = 3
+    c = a + b
+    print("普通运算的结果", c)
+
+    # tensorflow实现加法运算
+
+    a_t = tf.constant(2)
+    b_t = tf.constant(3)
+    c_t = a_t + b_t
+    print("a_t:\n", a_t)
+    print("b_t:\n", b_t)
+    print("tensorflow加法运算的结果", c_t)
+
+    # 查看默认图 
+    # 方法1：调用方法
+    default_g = tf.get_default_graph()
+    print("default_g", default_g)
+    print("a_t的图属性", a_t.graph)
+    print("c_t的图属性", c_t.graph)
+
+    # 自定义图
+    new_g = tf.Graph()
+    # 在自己的图中定义数据和操作
+    with new_g.as_default():
+        a_new = tf.constant(20)
+        b_new = tf.constant(30)
+        c_new = a_new + b_new
+        print("c_new:\n", c_new)
+        print("a_new的图属性", a_new.graph)
+        print("c_new的图属性", c_new.graph)
+
+    # 开启会话
+    with tf.Session() as sess:
+        c_t_value = sess.run(c_t)
+
+        print("c_t_value:", c_t_value)
+        print("sess的图属性", sess.graph)
+        # 1)将图写入本地生成events文件
+        tf.summary.FileWriter("./tmp/summary", graph=sess.graph)
+
+    # 开启new_g的会话
+    with tf.Session(graph=new_g) as new_sess:
+        c_new_value = new_sess.run(c_new)
+        print("c_new_value:\n", c_new_value)
+        print("new_sess的图属性：\n", new_sess.graph)
+    return None
+
+
+if __name__ == '__main__':
+    # tensorflow_demo()
+    graph_demo()
